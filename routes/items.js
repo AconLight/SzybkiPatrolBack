@@ -9,7 +9,7 @@ router.get('/:name', async function(req, res, next) {
 });
 
 /* GET item by category. */
-router.get('/:category', async function(req, res, next) {
+router.get('category/:category', async function(req, res, next) {
   const items = await ItemModel.find({category: req.params.category})
   res.send(items);
 });
