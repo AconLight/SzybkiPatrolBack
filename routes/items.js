@@ -3,7 +3,7 @@ import ItemModel from '../repository/mongo/model/item.js';
 var router = express.Router();
 
 /* GET all items */
-router.get('/', async function(req, res, next) {
+router.get('/all', async function(req, res, next) {
   const item = await ItemModel.find()
   res.send(item);
 });
