@@ -1,6 +1,7 @@
 import 'dotenv/config'
 import jwt from 'jsonwebtoken'
 import UserModel from '../repository/mongo/model/user.js';
+import repository from '../repository/repository.js';
 
 const auth = async (req, res, next) => {
     const authorizationHeader = req.header("Authorization")
@@ -13,7 +14,7 @@ const auth = async (req, res, next) => {
     try {
         const token = authorizationHeader.replace("Bearer ", "")
         const decoded = jwt.verify(token, process.env.SECRET_KEY);
-        const user = await UserModel.findOne({login: decoded.login})
+        const user = await repository.user.getUserByLogin(decoded.login)
         console.log(user)
         console.log(decoded)
         if (decoded.userId !== user._id + "") {

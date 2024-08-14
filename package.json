@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "node ./bin/www",
+    "dev": "node ./bin/www",
     "setupDB": "node ./scripts/setupDB.js"
   },
   "dependencies": {

@@ -1,18 +1,23 @@
 import express from 'express';
 var router = express.Router();
-import UserModel from '../repository/mongo/model/user.js';
 import 'dotenv/config'
 import jwt from 'jsonwebtoken'
 import auth from '../middleware/auth.js';
+import repository from '../repository/repository.js';
 
-/* GET user by nick. */
+/* GET user by login. */
 router.get('/user/:login', auth, async function(req, res, next) {
-  const user = await UserModel.findOne({login: req.params.login})
-  user.password = undefined
+  const user = await repository.user.getUserByLogin(req.params.login)
   res.send(user);
 });
 
 /* GET user by nick. */
+router.get('/userByNick/:nick', async function(req, res, next) {
+  const user = await repository.user.getUserByNick(req.params.nick)
+  res.send(user);
+});
+
+/* GET user refreshToken. */
 router.get('/refreshToken', auth, async function(req, res, next) {
   const token = jwt.sign(
     {
@@ -33,7 +38,7 @@ router.get('/refreshToken', auth, async function(req, res, next) {
 router.post('/login', async function(req, res, next) {
   const { login, password } = req.body;
   console.log(login)
-  let user = await UserModel.findOne({login: login})
+  let user = await repository.user.getUserByLoginWithPassword(login)
   user = user && user.toObject()
   if (user && user.password == password) {
     const token = jwt.sign(
