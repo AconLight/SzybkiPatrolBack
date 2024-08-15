@@ -3,29 +3,19 @@ var router = express.Router();
 import 'dotenv/config'
 import auth from '../middleware/auth.js';
 import repository from '../repository/repository.js';
-import { generateFight } from '../logic/race/fight.js';
 import { checkTimer } from '../logic/timer/timer.js';
 
 /* GET user by nick. */
-router.get('/fight/:nick/:turns', auth, async function(req, res, next) {
+router.get('/work/:time', auth, async function(req, res, next) {
   let user = await repository.user.getUserByLogin(req.decodedToken.login)
   user = user.toObject()
 
-  if (!checkTimer(user.timers.race))    return res.status(204).json({ success: false, message: "race" });
   if (!checkTimer(user.timers.work))    return res.status(204).json({ success: false, message: "work" });
   if (!checkTimer(user.timers.trening)) return res.status(204).json({ success: false, message: "trening" });
-    
 
-  let oponent = await repository.user.getUserByNick(req.params.nick)
-  if (!oponent) return res
-    .status(204)
-    .json({ success: false, message: "no such nick" });
-  oponent = oponent.toObject()
-
-  const fightLogs = generateFight(user.mainStats, oponent.mainStats, req.params.turns)
-  repository.user.setUserRaceTimer(user.login, 2)
+  repository.user.setUserWorkTimer(user.login, req.params.time)
     
-  res.send(fightLogs);
+  res.status(200).send('ok')
 });
 
 export default router

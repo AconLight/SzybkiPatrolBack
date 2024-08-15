@@ -8,6 +8,8 @@ import cors from 'cors';
 import usersRouter  from './routes/users.js';
 import itemsRouter  from './routes/items.js';
 import raceRouter  from './routes/race.js';
+import treningRouter  from './routes/trening.js';
+import workRouter  from './routes/work.js';
 import { mongoConnect } from './repository/mongo/mongo.js';
 
 const __dirname = import.meta.dirname;
@@ -28,6 +30,8 @@ app.use(cors())
 app.use('/users', usersRouter);
 app.use('/items', itemsRouter);
 app.use('/race', raceRouter);
+app.use('/trening', treningRouter);
+app.use('/work', workRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

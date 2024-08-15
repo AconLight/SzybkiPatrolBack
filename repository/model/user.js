@@ -17,11 +17,13 @@ const user = {
         return user
     },
     setUserRaceTimer: async (login, minutes) => {
-        console.log('setUserRaceTimer')
-        console.log(Math.floor(Date.now() / 1000) + 60*minutes)
-        console.log(login)
         const res = await UserModel.updateOne({login: login}, {$set: {'timers.race': Math.floor(Date.now() / 1000) + 60*minutes}})
-        console.log(res)
+    },
+    setUserWorkTimer: async (login, minutes) => {
+        const res = await UserModel.updateOne({login: login}, {$set: {'timers.work': Math.floor(Date.now() / 1000) + 60*minutes}})
+    },
+    setUserTreningTimer: async (login, minutes) => {
+        const res = await UserModel.updateOne({login: login}, {$set: {'timers.trening': Math.floor(Date.now() / 1000) + 60*minutes}})
     }
 }
 
