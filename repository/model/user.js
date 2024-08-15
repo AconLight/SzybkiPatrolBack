@@ -24,6 +24,14 @@ const user = {
     },
     setUserTreningTimer: async (login, minutes) => {
         const res = await UserModel.updateOne({login: login}, {$set: {'timers.trening': Math.floor(Date.now() / 1000) + 60*minutes}})
+    },
+    addItem: async (login, name) => {
+        console.log(name)
+        const res = await UserModel.updateOne(
+            { login: login }, 
+            { $push: { items: name } },
+        );
+        console.log(res)
     }
 }
 

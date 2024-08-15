@@ -37,7 +37,6 @@ router.get('/refreshToken', auth, async function(req, res, next) {
 /* POST login. */
 router.post('/login', async function(req, res, next) {
   const { login, password } = req.body;
-  console.log(login)
   let user = await repository.user.getUserByLoginWithPassword(login)
   user = user && user.toObject()
   if (user && user.password == password) {

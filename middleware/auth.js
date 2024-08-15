@@ -5,7 +5,6 @@ import repository from '../repository/repository.js';
 
 const auth = async (req, res, next) => {
     const authorizationHeader = req.header("Authorization")
-    console.log('auth')
     if (!authorizationHeader || !authorizationHeader.startsWith("Bearer ")) {
     return res
         .status(401)
@@ -15,8 +14,6 @@ const auth = async (req, res, next) => {
         const token = authorizationHeader.replace("Bearer ", "")
         const decoded = jwt.verify(token, process.env.SECRET_KEY);
         const user = await repository.user.getUserByLogin(decoded.login)
-        console.log(user)
-        console.log(decoded)
         if (decoded.userId !== user._id + "") {
             return res.status(401).json({ success: false, message: "Invalid token" });
         }

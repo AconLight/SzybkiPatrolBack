@@ -14,8 +14,6 @@ const generateTurn = (userStats, oponentStats) => {
 }
 
 const generateFight = (userStats, oponentStats, turnsNumber) => {
-    console.log('userStats')
-    console.log(userStats)
     const turns = []
     for(let i = 0; i < turnsNumber; i++){
         turns.push(generateTurn(userStats, oponentStats));

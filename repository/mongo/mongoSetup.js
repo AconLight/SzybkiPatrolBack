@@ -8,13 +8,11 @@ const models = [
 const dropDB = async () => {
     for await (const model of models) {
         const result = await model.collection.drop()
-        console.log(result)
     }
 }
 
 const createDB = async () => {
     const result = await UserModel.create({ nick: 'Patrol', lvl: 1 }) 
-    console.log(result)
 }
 
 const mongoSetup = async () => {
