@@ -17,6 +17,16 @@ router.get('/userByNick/:nick', async function(req, res, next) {
   res.send(user);
 });
 
+/* post user stat. */
+router.post('/incStat/:statName', auth, async function(req, res, next) {
+  if (['armor', 'attack', 'speed', 'steering'].includes(req.params.statName)) {
+    console.log('incStat')
+    const user = await repository.user.incStat(req.decodedToken.login, req.params.statName, 100)
+    res.send(user);
+  }
+
+});
+
 /* GET user refreshToken. */
 router.get('/refreshToken', auth, async function(req, res, next) {
   const token = jwt.sign(

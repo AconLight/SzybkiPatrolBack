@@ -19,9 +19,10 @@ router.get('/userItems', auth, async function(req, res, next) {
 
 /* put addItem*/
 router.put('/addItem/:name', auth, async function(req, res, next) {
-  const item = await repository.item.getItemByName(req.params.name)
+  let item = await repository.item.getItemByName(req.params.name)
+  item = item.toObject()
   if (item) {
-      await repository.user.addItem(req.decodedToken.login, req.params.name)
+      await repository.user.buyItem(req.decodedToken.login, req.params.name, item.price)
   }
   res.send("ok");
 });

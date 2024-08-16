@@ -7,12 +7,12 @@ const schema = new mongoose.Schema({
     timers: {work: Number, trening: Number, race: Number},
     mainStats: {
         speed: Number,
-        atack: Number, 
+        attack: Number, 
         armor: Number, 
         steering: Number},
     stats: {
-        money: String,
-        cans: String
+        money: Number,
+        rt: Number
     },
     items: [String]
 });

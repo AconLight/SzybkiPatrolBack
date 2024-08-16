@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-const schema = new mongoose.Schema({ Nazwa: String, name: String, category: String });
+const schema = new mongoose.Schema({ name: String, category: String });
 
 const ItemModel = mongoose.model('Item', schema);
 
