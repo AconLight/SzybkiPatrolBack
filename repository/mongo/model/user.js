@@ -14,7 +14,7 @@ const schema = new mongoose.Schema({
         money: Number,
         rt: Number
     },
-    items: [String]
+    items: [{itemId: mongoose.ObjectId, isEquiped: Boolean}]
 });
 
 const UserModel = mongoose.model('User', schema);

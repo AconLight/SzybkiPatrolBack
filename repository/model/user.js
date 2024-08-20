@@ -25,10 +25,25 @@ const user = {
     setUserTreningTimer: async (login, minutes) => {
         const res = await UserModel.updateOne({login: login}, {$set: {'timers.trening': Math.floor(Date.now() / 1000) + 60*minutes}})
     },
-    buyItem: async (login, name, price) => {
+    buyItem: async (login, id, price) => {
         const res = await UserModel.updateOne(
             { login: login }, 
-            { $push: { items: name }, $inc: { 'stats.money': -1*price } },
+            { $push: { items: {
+                itemId: id,
+                isEquiped: false
+            } }, $inc: { 'stats.money': -1*price } },
+        );
+    },
+    activateItem: async (login, itemId) => {
+        const res = await UserModel.updateOne(
+            { login: login, items: { "$elemMatch": {itemId: itemId}} }, 
+            { $set: { 'items.$.isEquiped': true }}
+        );
+    },
+    deactivateItems: async (login, itemIds) => {
+        const res = await UserModel.updateMany(
+            { login: login, 'items': { "$elemMatch": { itemId: {'$in': itemIds}}} }, 
+            { $set: { 'items.$[].isEquiped': false }}
         );
     },
     incStat: async (login, statName, price) => {

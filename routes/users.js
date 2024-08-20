@@ -8,13 +8,19 @@ import repository from '../repository/repository.js';
 /* GET user by login. */
 router.get('/user/:login', auth, async function(req, res, next) {
   const user = await repository.user.getUserByLogin(req.params.login)
-  res.send(user);
+  const equipedItemIds = user.toObject().items.filter(e => e.isEquiped).map(e => e.itemId)
+  const equipedItemsFull = await repository.item.getItemsByIds(equipedItemIds)
+  const car = equipedItemsFull.find(e => e.category == 'cars')?.toObject()
+  res.send({...user.toObject(), car: {url: car.imgUrl, name: car.name}});
 });
 
 /* GET user by nick. */
 router.get('/userByNick/:nick', async function(req, res, next) {
   const user = await repository.user.getUserByNick(req.params.nick)
-  res.send(user);
+  const equipedItemIds = user.toObject().items.filter(e => e.isEquiped).map(e => e.itemId)
+  const equipedItemsFull = await repository.item.getItemsByIds(equipedItemIds)
+  const car = equipedItemsFull.find(e => e.category == 'cars')?.toObject()
+  res.send({...user.toObject(), car: {url: car.imgUrl, name: car.name}});
 });
 
 /* post user stat. */
@@ -25,6 +31,17 @@ router.post('/incStat/:statName', auth, async function(req, res, next) {
     res.send(user);
   }
 
+});
+
+/* post user activateItem. */
+router.post('/activateItem/:itemId', auth, async function(req, res, next) {
+  const item = await repository.item.getItemById(req.params.itemId)
+  const category = item.toObject().category
+  const itemsDeactivation = await repository.item.getItemByCategory(category)
+  const ids = itemsDeactivation.map(item => item._id)
+  await repository.user.deactivateItems(req.decodedToken.login, ids)
+  const user = await repository.user.activateItem(req.decodedToken.login, req.params.itemId)
+  res.send(user);
 });
 
 /* GET user refreshToken. */

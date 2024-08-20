@@ -7,8 +7,11 @@ const item = {
     getItemByName: async (name) => {
         return await ItemModel.findOne({name: name})
     },
-    getItemsByNames: async (names) => {
-        return await ItemModel.find({name: {"$in": names}})
+    getItemById: async (id) => {
+        return await ItemModel.findById(id)
+    },
+    getItemsByIds: async (ids) => {
+        return await ItemModel.find({_id: {"$in": ids}})
     },
     getItemByCategory: async (category) => {
         return await ItemModel.find({category: category})
