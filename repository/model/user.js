@@ -43,8 +43,10 @@ const user = {
     deactivateItems: async (login, itemIds) => {
         const res = await UserModel.updateMany(
             { login: login, 'items': { "$elemMatch": { itemId: {'$in': itemIds}}} }, 
-            { $set: { 'items.$[].isEquiped': false }}
+            { $set: { 'items.$[x].isEquiped': false }},
+            { arrayFilters: [{'x.itemId': {'$in': itemIds}}] },
         );
+        console.log(res)
     },
     incStat: async (login, statName, price) => {
         const res = await UserModel.updateOne(
