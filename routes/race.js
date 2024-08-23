@@ -22,8 +22,26 @@ router.get('/fight/:nick/:turns', auth, async function(req, res, next) {
     .json({ success: false, message: "no such nick" });
   oponent = oponent.toObject()
 
-  const fightLogs = generateFight(user.mainStats, oponent.mainStats, req.params.turns)
-  repository.user.setUserRaceTimer(user.login, 2)
+  const userMainStats = user.mainStats
+  const oponentMainStats = oponent.mainStats
+
+  const userItems = await repository.item.getItemsByIds(user.items.filter(item => item.isEquiped).map(item => item.itemId))
+  const oponentItems = await repository.item.getItemsByIds(oponent.items.filter(item => item.isEquiped).map(item => item.itemId))
+
+  const statNames = ['attack', 'armor', 'steering', 'speed']
+  statNames.forEach(statName => {
+    userMainStats[statName] += userItems.reduce((acc, curr) => acc + (curr.toObject()[statName] || 0), 0)
+    oponentMainStats[statName] += oponentItems.reduce((acc, curr) => acc + (curr.toObject()[statName] || 0), 0)
+  });
+
+  userMainStats.events = userItems.reduce((acc, curr) => [...acc, ...curr.toObject().events || []], [])
+  oponentMainStats.events = oponentItems.reduce((acc, curr) => [...acc, ...curr.toObject().events || []], [])
+
+  console.log(userMainStats)
+  console.log(userItems)
+
+  const fightLogs = generateFight(userMainStats, oponentMainStats, req.params.turns)
+  repository.user.setUserRaceTimer(user.login, 0)
     
   res.send(fightLogs);
 });
