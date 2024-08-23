@@ -41,7 +41,10 @@ router.get('/fight/:nick/:turns', auth, async function(req, res, next) {
   console.log(userItems)
 
   const fightLogs = generateFight(userMainStats, oponentMainStats, req.params.turns)
-  repository.user.setUserRaceTimer(user.login, 0)
+  await repository.user.setUserRaceTimer(user.login, 0)
+
+  await repository.user.setHp(user.nick, fightLogs.userHp)
+  await repository.user.setHp(oponent.nick, fightLogs.oponentHp)
     
   res.send(fightLogs);
 });

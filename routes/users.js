@@ -45,6 +45,12 @@ router.post('/activateItem/:itemId', auth, async function(req, res, next) {
   res.send(user);
 });
 
+/* post user activateItem. */
+router.post('/userRepair', auth, async function(req, res, next) {
+  await repository.user.repairByLogin(req.decodedToken.login)
+  res.send('ok');
+});
+
 /* GET user refreshToken. */
 router.get('/refreshToken', auth, async function(req, res, next) {
   const token = jwt.sign(

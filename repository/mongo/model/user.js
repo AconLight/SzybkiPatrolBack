@@ -6,6 +6,7 @@ const schema = new mongoose.Schema({
     lvl: Number, 
     timers: {work: Number, trening: Number, race: Number},
     mainStats: {
+        hp: Number,
         speed: Number,
         attack: Number, 
         armor: Number, 

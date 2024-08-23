@@ -19,6 +19,8 @@ const generateTurn = (userStats, oponentStats) => {
 }
 
 const generateFight = (userStats, oponentStats, turnsNumber) => {
+    let userHp = userStats.hp
+    let oponentHp = oponentStats.hp
     const statNames = ['attack', 'armor', 'steering', 'speed']
     const turns = []
     const userMods = []
@@ -70,10 +72,17 @@ const generateFight = (userStats, oponentStats, turnsNumber) => {
                 })
             }
         })
+
+        userHp -= turnResult.dmg2
+        oponentHp -= turnResult.dmg1
         
         turns.push(turnResult);
+
+        if (userHp <= 0 || oponentHp <= 0) {
+            return {turns, userHp: Math.max(0, userHp), oponentHp: Math.max(0, oponentHp)}
+        }
     }
-    return turns
+    return {turns, userHp, oponentHp}
 }
 
 export {generateFight}
