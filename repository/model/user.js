@@ -46,30 +46,25 @@ const user = {
             { $set: { 'items.$[x].isEquiped': false }},
             { arrayFilters: [{'x.itemId': {'$in': itemIds}}] },
         );
-        console.log(res)
     },
     incStat: async (login, statName, price) => {
         const res = await UserModel.updateOne(
             { login: login }, 
             { $inc: { 'stats.money': -1*price, [`mainStats.${statName}`]: 1} },
         );
-        console.log(res)
     },
     setHp: async (nick, hp) => {
-        console.log(nick)
-        console.log(hp)
         const res = await UserModel.updateOne(
             { nick: nick }, 
             { $set: { 'mainStats.hp': Math.floor(hp)} },
         );
-        console.log(res)
     },
     repairByLogin: async (login) => {
         const res = await UserModel.updateOne(
             { login: login }, 
             { $set: { 'mainStats.hp': 1000} },
         );
-        console.log(res)
+        return 1000
     }
 }
 

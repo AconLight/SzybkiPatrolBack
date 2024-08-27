@@ -4,6 +4,7 @@ import 'dotenv/config'
 import auth from '../middleware/auth.js';
 import repository from '../repository/repository.js';
 import { checkTimer } from '../logic/timer/timer.js';
+import returnUser from '../middleware/returnUser.js';
 
 /* GET user by nick. */
 router.get('/trening/:time', auth, async function(req, res, next) {
@@ -13,9 +14,10 @@ router.get('/trening/:time', auth, async function(req, res, next) {
   if (!checkTimer(user.timers.work))    return res.status(204).json({ success: false, message: "work" });
   if (!checkTimer(user.timers.trening)) return res.status(204).json({ success: false, message: "trening" });
 
-  repository.user.setUserTreningTimer(user.login, req.params.time)
+  await repository.user.setUserTreningTimer(user.login, req.params.time)
     
-  res.status(200).send('ok')
-});
+  res.status(200)
+  next()
+}, returnUser);
 
 export default router

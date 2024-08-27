@@ -5,6 +5,7 @@ import auth from '../middleware/auth.js';
 import repository from '../repository/repository.js';
 import { generateFight } from '../logic/race/fight.js';
 import { checkTimer } from '../logic/timer/timer.js';
+import returnUser from '../middleware/returnUser.js';
 
 /* GET user by nick. */
 router.get('/fight/:nick/:turns', auth, async function(req, res, next) {
@@ -37,16 +38,13 @@ router.get('/fight/:nick/:turns', auth, async function(req, res, next) {
   userMainStats.events = userItems.reduce((acc, curr) => [...acc, ...curr.toObject().events || []], [])
   oponentMainStats.events = oponentItems.reduce((acc, curr) => [...acc, ...curr.toObject().events || []], [])
 
-  console.log(userMainStats)
-  console.log(userItems)
-
   const fightLogs = generateFight(userMainStats, oponentMainStats, req.params.turns)
   await repository.user.setUserRaceTimer(user.login, 0)
 
   await repository.user.setHp(user.nick, fightLogs.userHp)
   await repository.user.setHp(oponent.nick, fightLogs.oponentHp)
-    
-  res.send(fightLogs);
-});
+  req.afterData = {fight: fightLogs};
+  next()
+}, returnUser);
 
 export default router

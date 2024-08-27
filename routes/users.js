@@ -4,6 +4,7 @@ import 'dotenv/config'
 import jwt from 'jsonwebtoken'
 import auth from '../middleware/auth.js';
 import repository from '../repository/repository.js';
+import returnUser from '../middleware/returnUser.js';
 
 /* GET user by login. */
 router.get('/user/:login', auth, async function(req, res, next) {
@@ -26,30 +27,27 @@ router.get('/userByNick/:nick', async function(req, res, next) {
 /* post user stat. */
 router.post('/incStat/:statName', auth, async function(req, res, next) {
   if (['armor', 'attack', 'speed', 'steering'].includes(req.params.statName)) {
-    console.log('incStat')
-    const user = await repository.user.incStat(req.decodedToken.login, req.params.statName, 100)
-    res.send(user);
+    const result = await repository.user.incStat(req.decodedToken.login, req.params.statName, 100)
+    next()
   }
-
-});
+}, returnUser);
 
 /* post user activateItem. */
 router.post('/activateItem/:itemId', auth, async function(req, res, next) {
   const item = await repository.item.getItemById(req.params.itemId)
   const category = item.toObject().category
   const itemsDeactivation = await repository.item.getItemByCategory(category)
-  console.log(itemsDeactivation)
   const ids = itemsDeactivation.map(item => item._id)
   await repository.user.deactivateItems(req.decodedToken.login, ids)
-  const user = await repository.user.activateItem(req.decodedToken.login, req.params.itemId)
-  res.send(user);
-});
+  await repository.user.activateItem(req.decodedToken.login, req.params.itemId)
+  next()
+}, returnUser);
 
-/* post user activateItem. */
+/* post user userRepair. */
 router.post('/userRepair', auth, async function(req, res, next) {
   await repository.user.repairByLogin(req.decodedToken.login)
-  res.send('ok');
-});
+  next()
+}, returnUser);
 
 /* GET user refreshToken. */
 router.get('/refreshToken', auth, async function(req, res, next) {
@@ -59,7 +57,7 @@ router.get('/refreshToken', auth, async function(req, res, next) {
         login: req.decodedToken.login
     },
     process.env.SECRET_KEY,
-    { expiresIn: "1h" }
+    { expiresIn: "10h" }
   );
   const result = {
     login: req.decodedToken.login,
