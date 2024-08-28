@@ -28,7 +28,7 @@ router.put('/addItem/:name', auth, async function(req, res, next) {
   res.send("ok");
 });
 
-/* GET item by name. */
+/* GET item by name */
 router.get('/:name', async function(req, res, next) {
   const item = await repository.item.getItemByName(req.params.name)
   res.send(item);

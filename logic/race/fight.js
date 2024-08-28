@@ -19,6 +19,8 @@ const generateTurn = (userStats, oponentStats) => {
 }
 
 const generateFight = (userStats, oponentStats, turnsNumber) => {
+    let overtake = 0
+    let dmgDiff = 0
     let userHp = userStats.hp
     let oponentHp = oponentStats.hp
     const statNames = ['attack', 'armor', 'steering', 'speed']
@@ -46,6 +48,11 @@ const generateFight = (userStats, oponentStats, turnsNumber) => {
         modOponentStats.events = oponentStats.events
 
         const turnResult = generateTurn(modUserStats, modOponentStats);
+
+        dmgDiff += turnResult.dmg1 - turnResult.dmg2
+        overtake += turnResult.overtake
+        overtake = Math.min(3, overtake)
+        overtake = Math.max(-3, overtake)
 
         turnResult.events1.forEach(e => {
             for(let j = 1; j <= e.player1Mods.laps; j++) {
@@ -82,7 +89,7 @@ const generateFight = (userStats, oponentStats, turnsNumber) => {
             return {turns, userHp: Math.max(0, userHp), oponentHp: Math.max(0, oponentHp)}
         }
     }
-    return {turns, userHp, oponentHp}
+    return {turns, userHp, oponentHp, overtake, dmgDiff}
 }
 
 export {generateFight}

@@ -13,6 +13,8 @@ const schema = new mongoose.Schema({
         steering: Number},
     stats: {
         money: Number,
+        exp: Number,
+        lvl: Number,
         rt: Number
     },
     items: [{itemId: mongoose.ObjectId, isEquiped: Boolean}]

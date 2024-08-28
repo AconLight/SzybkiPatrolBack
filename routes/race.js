@@ -44,7 +44,58 @@ router.get('/fight/:nick/:turns', auth, async function(req, res, next) {
   await repository.user.setHp(user.nick, fightLogs.userHp)
   await repository.user.setHp(oponent.nick, fightLogs.oponentHp)
   oponent = await repository.user.getUserByNick(req.params.nick)
-  req.afterData = {fight: fightLogs, oponent: oponent};
+
+  const result = {}
+  if (fightLogs.userHp <= 0) {
+    result.winner = "<player2>"
+    result.description = `Gracz <player2> zniszczył samochód gracza <player1> i spokojnie dojeżdża do mety.`
+    result.exp = 100
+    result.money = 1000
+  } else if (fightLogs.oponentHp <= 0) {
+    result.winner = "<player1>"
+    result.description = `Gracz <player1> zniszczył samochód gracza <player2> i spokojnie dojeżdża do mety.`
+    result.exp = 100
+    result.money = 1000
+  } else {
+    if (fightLogs.overtake > 0) {
+      result.winner = "<player1>"
+      result.description = `Gracz <player1> jako pierwszy dojeżdża do mety i wygrywa wyścig.`
+      result.exp = 100
+      result.money = 1000
+    } else if (fightLogs.overtake < 0) {
+      result.winner = "<player2>"
+      result.description = `Gracz <player2> jako pierwszy dojeżdża do mety i wygrywa wyścig.`
+      result.exp = 100
+      result.money = 1000
+    } else {
+      if (fightLogs.dmgDiff > 0) {
+        result.winner = "<player1>"
+        result.description = `Obaj gracze dojeżdżają do mety w tym samym czasie, jednak gracz <player1> zadał przeciwnikowi więcej obrażeń i to on wygrywa to starcie.`
+        result.exp = 100
+        result.money = 1000
+      } else if (fightLogs.dmgDiff < 0) {
+        result.winner = "<player2>"
+        result.description = `Obaj gracze dojeżdżają do mety w tym samym czasie, jednak gracz <player2> zadał przeciwnikowi więcej obrażeń i to on wygrywa to starcie.`
+        result.exp = 100
+        result.money = 1000
+      } else {
+        result.winner = "remis"
+        result.description = `Obaj gracze dojeżdżają do mety w tym samym czasie oraz zadali tyle samo obrażeń.`
+        result.exp = 0
+        result.money = 0
+      }
+    }
+  }
+
+  if (result.winner == "<player1>") {
+    await repository.user.addReward(user.nick, result.exp, result.money)
+    await repository.user.addReward(oponent.nick, 0, -result.money)
+  } else if (result.winner == "<player2>") {
+    await repository.user.addReward(user.nick, 0, -result.money)
+    await repository.user.addReward(oponent.nick, result.exp, result.money)
+  }
+
+  req.afterData = {fight: fightLogs, oponent: oponent, result};
   next()
 }, returnUser);
 

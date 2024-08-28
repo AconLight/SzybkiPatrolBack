@@ -34,6 +34,12 @@ const user = {
             } }, $inc: { 'stats.money': -1*price } },
         );
     },
+    addReward: async (nick, exp, money) => {
+        const res = await UserModel.updateOne(
+            { nick: nick }, 
+            { $inc: { 'stats.money': 1*money, 'stats.exp': 1*exp } },
+        );
+    },
     activateItem: async (login, itemId) => {
         const res = await UserModel.updateOne(
             { login: login, items: { "$elemMatch": {itemId: itemId}} }, 
