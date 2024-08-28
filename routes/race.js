@@ -43,7 +43,8 @@ router.get('/fight/:nick/:turns', auth, async function(req, res, next) {
 
   await repository.user.setHp(user.nick, fightLogs.userHp)
   await repository.user.setHp(oponent.nick, fightLogs.oponentHp)
-  req.afterData = {fight: fightLogs};
+  oponent = await repository.user.getUserByNick(req.params.nick)
+  req.afterData = {fight: fightLogs, oponent: oponent};
   next()
 }, returnUser);
 
