@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser';
 import logger  from 'morgan';
 import cors from 'cors';
 
+import imagesRouter  from './routes/images.js';
 import usersRouter  from './routes/users.js';
 import itemsRouter  from './routes/items.js';
 import raceRouter  from './routes/race.js';
@@ -28,6 +29,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors())
 
 app.use('/users', usersRouter);
+app.use('/images', imagesRouter);
 app.use('/items', itemsRouter);
 app.use('/race', raceRouter);
 app.use('/trening', treningRouter);
